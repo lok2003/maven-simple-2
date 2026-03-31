@@ -1,5 +1,10 @@
 name: Pull-request for .NET
+
 on:
+  push:
+    branches:
+      - main
+      - feature_branch
   pull_request:
     branches:
       - feature_branch
