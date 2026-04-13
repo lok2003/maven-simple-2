@@ -41,3 +41,10 @@ jobs:
         with:
           name: test-reports
           path: target/surefire-reports/
+      - name: Perform Code Quality Analysis
+        uses: github/codeql-action/analyze@v4
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: "**/target/surefire-reports/**/*.xml"
+          comment_mode: always
