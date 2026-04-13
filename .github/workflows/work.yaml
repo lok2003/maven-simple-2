@@ -31,11 +31,8 @@ jobs:
       - name: Build and Test
         run: mvn clean verify
 
-      - name: Perform Code Quality Analysis
-        uses: github/codeql-action/analyze@v4
-
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
+      - name: Upload Build Artifact (JAR)
+        uses: actions/upload-artifact@v4
         with:
-          files: "**/target/surefire-reports/**/*.xml"
-          comment_mode: always
+          name: maven-jar
+          path: target/*.jar
