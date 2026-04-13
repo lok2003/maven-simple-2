@@ -1,4 +1,4 @@
-name: Pull-request for .NET
+name: Pull-request for Java Maven Project
 
 on:
   push:
@@ -8,24 +8,34 @@ on:
   pull_request:
     branches:
       - feature_branch
+
 jobs:
   build_maven:
     runs-on: ubuntu-latest
-    steps:
-      - name: checkout Code 
-        uses: actions/checkout@v6
 
-      - name: Initialize codeQL
+    steps:
+      - name: Checkout Code 
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
           languages: java
       
-      - name: build and test or package
-        run: mvn clean package
-      - name: Perform code quality analysis
+      - name: Build and Test
+        run: mvn clean verify
+
+      - name: Perform Code Quality Analysis
         uses: github/codeql-action/analyze@v4
-      - name: publish test results
+
+      - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          files: "**/target/surfire-reports/**/*.xml"
+          files: "**/target/surefire-reports/**/*.xml"
           comment_mode: always
