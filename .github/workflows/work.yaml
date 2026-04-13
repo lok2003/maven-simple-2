@@ -8,11 +8,15 @@ on:
   pull_request:
     branches:
       - feature_branch
-
+   
 jobs:
   build_maven:
     runs-on: ubuntu-latest
-
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [8,11,17,21,25]
+        distribution: [temurin, zulu, microsoft]
     steps:
       - name: Checkout Code 
         uses: actions/checkout@v4
@@ -20,8 +24,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: ${{ matrix.distribution }}
+          java-version: ${{ matrix.java }}
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
@@ -34,12 +38,12 @@ jobs:
       - name: Upload Build Artifact (JAR)
         uses: actions/upload-artifact@v4
         with:
-          name: maven-jar
+          name: maven-jar-${{ matrix.java }}-${{ matrix.distribution }}
           path: target/*.jar
       - name: Upload Test Reports
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports
+          name: test-reports-${{ matrix.java }}-${{ matrix.distribution }}
           path: target/surefire-reports/
       - name: Perform Code Quality Analysis
         uses: github/codeql-action/analyze@v4
